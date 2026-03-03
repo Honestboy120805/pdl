@@ -1,48 +1,42 @@
-import { serve } from "https://deno.land/std@0.192.0/http/server.ts";
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+dotenv.config();
 
-serve(async (req) => {
-  // ✅ CORS preflight
-  if (req?.method === "OPTIONS") {
-    return new Response("ok", {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-        "Access-Control-Allow-Headers": "*"
-      }
-    });
-  }
+const app = express();
+app.use(cors());
+app.use(express.json());
 
+app.options("/", (req, res) => {
+  res.send("ok");
+});
+
+app.post("/", async (req, res) => {
   try {
-    const { type, booking, contact } = await req?.json();
-    const RESEND_API_KEY = Deno?.env?.get("RESEND_API_KEY");
-
+    const { type, booking, contact } = req.body;
+    const RESEND_API_KEY = process.env.RESEND_API_KEY;
     if (!RESEND_API_KEY) {
       throw new Error("RESEND_API_KEY is not configured");
     }
-
     const brandColor = "#0ea5e9";
-    const ADMIN_EMAIL = Deno?.env?.get("ADMIN_EMAIL") || "roywaitseveryday2@gmail.com";
-
+    const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "roywaitseveryday2@gmail.com";
     const emailHeader = `
       <div style="background-color: ${brandColor}; padding: 40px 20px; text-align: center;">
         <h1 style="color: white; margin: 0; font-size: 32px; font-family: serif;">Paragon</h1>
       </div>
     `;
-
     const emailFooter = `
       <div style="background-color: #f3f4f6; padding: 30px 20px; text-align: center; margin-top: 40px;">
-        <p style="color: #6b7280; margin: 0; font-size: 14px;">© 2026 Paragon. All rights reserved. Zenna.</p>
+        <p style="color: #6b7280; margin: 0; font-size: 14px;">© 2026 Paragon. All rights reserved.</p>
         <p style="color: #6b7280; margin: 10px 0 0 0; font-size: 14px;">
-          <a href="https://paragondel6143.builtwithrocket.new" style="color: ${brandColor}; text-decoration: none;">Visit Website</a> | 
-          <a href="https://paragondel6143.builtwithrocket.new/contact" style="color: ${brandColor}; text-decoration: none;">Contact Us</a>
+          <a href="https://pdl-hwx3xe2uk-honestboy.vercel.app" style="color: ${brandColor}; text-decoration: none;">Visit Website</a> | 
+          <a href="https://pdl-hwx3xe2uk-honestboy.vercel.app/contact" style="color: ${brandColor}; text-decoration: none;">Contact Us</a>
         </p>
       </div>
     `;
-
     let subject = "";
     let html = "";
     let toEmail = "";
-
     switch (type) {
       case "contact":
         toEmail = contact?.email;
@@ -70,7 +64,6 @@ serve(async (req) => {
           </body></html>
         `;
         break;
-
       case "admin_new_contact":
         toEmail = ADMIN_EMAIL;
         subject = `New Contact Message: ${contact?.subject}`;
@@ -89,7 +82,7 @@ serve(async (req) => {
                   <p style="margin: 10px 0 0 0; color: #4b5563;">${contact?.message}</p>
                 </div>
                 <div style="text-align: center; margin: 30px 0;">
-                  <a href="https://paragondel6143.builtwithrocket.new/admin/contacts" style="display: inline-block; background-color: ${brandColor}; color: white; padding: 15px 40px; text-decoration: none; border-radius: 50px; font-weight: bold;">View in Dashboard</a>
+                  <a href="https://pdl-hwx3xe2uk-honestboy.vercel.app/admin/contacts" style="display: inline-block; background-color: ${brandColor}; color: white; padding: 15px 40px; text-decoration: none; border-radius: 50px; font-weight: bold;">View in Dashboard</a>
                 </div>
               </div>
               ${emailFooter}
@@ -97,7 +90,6 @@ serve(async (req) => {
           </body></html>
         `;
         break;
-
       case "admin_new_booking":
         toEmail = ADMIN_EMAIL;
         subject = `New Booking Request: ${booking?.service_type} - ${booking?.name}`;
@@ -118,7 +110,7 @@ serve(async (req) => {
                   ${booking?.message ? `<p style="margin: 0; color: #1f2937;"><strong>Message:</strong> ${booking?.message}</p>` : ''}
                 </div>
                 <div style="text-align: center; margin: 30px 0;">
-                  <a href="https://paragondel6143.builtwithrocket.new/admin/bookings" style="display: inline-block; background-color: ${brandColor}; color: white; padding: 15px 40px; text-decoration: none; border-radius: 50px; font-weight: bold;">Manage Bookings</a>
+                  <a href="https://pdl-hwx3xe2uk-honestboy.vercel.app/admin/bookings" style="display: inline-block; background-color: ${brandColor}; color: white; padding: 15px 40px; text-decoration: none; border-radius: 50px; font-weight: bold;">Manage Bookings</a>
                 </div>
               </div>
               ${emailFooter}
@@ -126,7 +118,6 @@ serve(async (req) => {
           </body></html>
         `;
         break;
-
       case "confirmation":
         toEmail = booking?.email;
         subject = `Booking Confirmed - ${booking?.service_type}`;
@@ -147,7 +138,7 @@ serve(async (req) => {
                 </div>
                 <p style="color: #4b5563; line-height: 1.6;">I'm looking forward to working with you! If you have any questions, feel free to reach out.</p>
                 <div style="text-align: center; margin: 30px 0;">
-                  <a href="https://paragondel6143.builtwithrocket.new/my-bookings" style="display: inline-block; background-color: ${brandColor}; color: white; padding: 15px 40px; text-decoration: none; border-radius: 50px; font-weight: bold;">View My Booking</a>
+                  <a href="https://pdl-hwx3xe2uk-honestboy.vercel.app/my-bookings" style="display: inline-block; background-color: ${brandColor}; color: white; padding: 15px 40px; text-decoration: none; border-radius: 50px; font-weight: bold;">View My Booking</a>
                 </div>
               </div>
               ${emailFooter}
@@ -155,7 +146,6 @@ serve(async (req) => {
           </body></html>
         `;
         break;
-
       case "cancellation":
         toEmail = booking?.email;
         subject = `Booking Cancelled - ${booking?.service_type}`;
@@ -176,7 +166,7 @@ serve(async (req) => {
                 </div>
                 <p style="color: #4b5563; line-height: 1.6;">I'm sorry we couldn't work together this time. Feel free to book again in the future!</p>
                 <div style="text-align: center; margin: 30px 0;">
-                  <a href="https://paragondel6143.builtwithrocket.new/booking" style="display: inline-block; background-color: ${brandColor}; color: white; padding: 15px 40px; text-decoration: none; border-radius: 50px; font-weight: bold;">Book Again</a>
+                  <a href="https://pdl-hwx3xe2uk-honestboy.vercel.app/bookinks" style="display: inline-block; background-color: ${brandColor}; color: white; padding: 15px 40px; text-decoration: none; border-radius: 50px; font-weight: bold;">Book Again</a>
                 </div>
               </div>
               ${emailFooter}
@@ -184,7 +174,6 @@ serve(async (req) => {
           </body></html>
         `;
         break;
-
       case "status_update":
         toEmail = booking?.email;
         subject = `Booking Status Update - ${booking?.service_type}`;
@@ -203,7 +192,7 @@ serve(async (req) => {
                   <p style="margin: 0; color: #1f2937;"><strong>New Status:</strong> <span style="text-transform: capitalize;">${booking?.status}</span></p>
                 </div>
                 <div style="text-align: center; margin: 30px 0;">
-                  <a href="https://paragondel6143.builtwithrocket.new/my-bookings" style="display: inline-block; background-color: ${brandColor}; color: white; padding: 15px 40px; text-decoration: none; border-radius: 50px; font-weight: bold;">View My Booking</a>
+                  <a href="https://pdl-hwx3xe2uk-honestboy.vercel.app/my-bookings" style="display: inline-block; background-color: ${brandColor}; color: white; padding: 15px 40px; text-decoration: none; border-radius: 50px; font-weight: bold;">View My Booking</a>
                 </div>
               </div>
               ${emailFooter}
@@ -211,7 +200,6 @@ serve(async (req) => {
           </body></html>
         `;
         break;
-
       case "reminder":
         toEmail = booking?.email;
         subject = `Upcoming Event Reminder - ${booking?.service_type}`;
@@ -231,7 +219,7 @@ serve(async (req) => {
                 </div>
                 <p style="color: #4b5563; line-height: 1.6;">I'm excited to work with you! Please let me know if you need any last-minute adjustments.</p>
                 <div style="text-align: center; margin: 30px 0;">
-                  <a href="https://paragondel6143.builtwithrocket.new/my-bookings" style="display: inline-block; background-color: ${brandColor}; color: white; padding: 15px 40px; text-decoration: none; border-radius: 50px; font-weight: bold;">View My Booking</a>
+                  <a href="https://pdl-hwx3xe2uk-honestboy.vercel.app/my-bookings" style="display: inline-block; background-color: ${brandColor}; color: white; padding: 15px 40px; text-decoration: none; border-radius: 50px; font-weight: bold;">View My Booking</a>
                 </div>
               </div>
               ${emailFooter}
@@ -239,11 +227,9 @@ serve(async (req) => {
           </body></html>
         `;
         break;
-
       default:
         throw new Error("Invalid email type");
     }
-
     // Send email via Resend API
     const response = await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -252,38 +238,26 @@ serve(async (req) => {
         "Authorization": `Bearer ${RESEND_API_KEY}`
       },
       body: JSON.stringify({
-        from: "onboarding@resend.dev",
+        from: "paragon@info.com",
         to: toEmail,
         subject: subject,
         html: html
       })
     });
-
-    const data = await response?.json();
-
-    if (!response?.ok) {
+    const data = await response.json();
+    if (!response.ok) {
       throw new Error(data.message || "Failed to send email");
     }
-
-    return new Response(JSON.stringify({
+    res.json({
       success: true,
       message: "Email sent successfully",
       emailId: data.id
-    }), {
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
-      }
     });
-  } catch (error) {
-    return new Response(JSON.stringify({
-      error: error.message
-    }), {
-      status: 500,
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
-      }
+  } catch (error: any) {
+    res.status(500).json({
+      error: (error && typeof error === "object" && "message" in error) ? (error as any).message : "Unknown error"
     });
   }
 });
+
+export default app;

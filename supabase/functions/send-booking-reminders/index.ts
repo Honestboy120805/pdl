@@ -1,46 +1,42 @@
-import { serve } from "https://deno.land/std@0.192.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+// Node.js/Express version for Supabase Edge Function
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+dotenv.config();
+import { createClient } from "@supabase/supabase-js";
 
-serve(async (req) => {
-  // Allow CORS preflight
-  if (req?.method === "OPTIONS") {
-    return new Response("ok", {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-        "Access-Control-Allow-Headers": "*"
-      }
-    });
-  }
+const app = express();
+app.use(cors());
+app.use(express.json());
 
+app.options("/", (req, res) => {
+  res.send("ok");
+});
+
+app.post("/", async (req, res) => {
   try {
-    const SUPABASE_URL = Deno?.env?.get("SUPABASE_URL");
-    const SUPABASE_SERVICE_ROLE_KEY = Deno?.env?.get("SUPABASE_SERVICE_ROLE_KEY");
-    const RESEND_API_KEY = Deno?.env?.get("RESEND_API_KEY");
-    const APP_URL = Deno?.env?.get("APP_URL") || "https://paragondel6143.builtwithrocket.new";
-
+    const SUPABASE_URL = process.env.SUPABASE_URL;
+    const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    const RESEND_API_KEY = process.env.RESEND_API_KEY;
+    const APP_URL = process.env.APP_URL || "https://pdl-hwx3xe2uk-honestboy.vercel.app";
     if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
       throw new Error("Supabase credentials not configured");
     }
-
     if (!RESEND_API_KEY) {
       throw new Error("RESEND_API_KEY is not configured");
     }
-
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
-
     const brandColor = "#0ea5e9";
     const rescheduleUrl = `${APP_URL}/my-bookings`;
-
     const emailHeader = `
       <div style="background-color: ${brandColor}; padding: 40px 20px; text-align: center;">
-        <h1 style="color: white; margin: 0; font-size: 32px; font-family: serif;">Paragon</h1>
+        <h1 style="color: white; margin: 0; font-size: 32px; font-family: serif;">Paragon De Laftadian</h1>
       </div>
     `;
 
     const emailFooter = `
       <div style="background-color: #f3f4f6; padding: 30px 20px; text-align: center; margin-top: 40px;">
-        <p style="color: #6b7280; margin: 0; font-size: 14px;">© 2026 Paragon. All rights reserved.</p>
+        <p style="color: #6b7280; margin: 0; font-size: 14px;">© 2026 Paragon De Laftadian. All rights reserved. Zenna.</p>
         <p style="color: #6b7280; margin: 10px 0 0 0; font-size: 14px;">
           <a href="${APP_URL}" style="color: ${brandColor}; text-decoration: none;">Visit Website</a> | 
           <a href="${APP_URL}/contact" style="color: ${brandColor}; text-decoration: none;">Contact Us</a>
@@ -172,7 +168,7 @@ serve(async (req) => {
             "Authorization": `Bearer ${RESEND_API_KEY}`
           },
           body: JSON.stringify({
-            from: "onboarding@resend.dev",
+            from: "paragon@info.com",
             to: booking.email,
             subject: subject,
             html: html
@@ -205,25 +201,10 @@ serve(async (req) => {
     const totalSent = results.reduce((sum, r) => sum + r.sent, 0);
     const totalSkipped = results.reduce((sum, r) => sum + r.skipped, 0);
 
-    return new Response(JSON.stringify({
-      success: true,
-      message: `Reminder job completed. Sent: ${totalSent}, Skipped (already sent): ${totalSkipped}`,
-      results
-    }), {
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
-      }
-    });
+    res.json({ success: true, message: `Reminder job completed. Sent: ${totalSent}, Skipped (already sent): ${totalSkipped}` });
   } catch (error: any) {
-    return new Response(JSON.stringify({
-      error: error?.message || "Unknown error"
-    }), {
-      status: 500,
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
-      }
-    });
+    res.status(500).json({ error: (error && typeof error === "object" && "message" in error) ? (error as any).message : "Unknown error" });
   }
 });
+
+export default app;
