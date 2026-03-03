@@ -31,7 +31,7 @@ serve(async (req) => {
 
     const emailFooter = `
       <div style="background-color: #f3f4f6; padding: 30px 20px; text-align: center; margin-top: 40px;">
-        <p style="color: #6b7280; margin: 0; font-size: 14px;">© 2026 Paragon. All rights reserved.</p>
+        <p style="color: #6b7280; margin: 0; font-size: 14px;">© 2026 Paragon. All rights reserved. Zenna.</p>
         <p style="color: #6b7280; margin: 10px 0 0 0; font-size: 14px;">
           <a href="https://paragondel6143.builtwithrocket.new" style="color: ${brandColor}; text-decoration: none;">Visit Website</a> | 
           <a href="https://paragondel6143.builtwithrocket.new/contact" style="color: ${brandColor}; text-decoration: none;">Contact Us</a>
@@ -114,7 +114,7 @@ serve(async (req) => {
                   <p style="margin: 0 0 10px 0; color: #1f2937;"><strong>Phone:</strong> ${booking?.phone}</p>
                   <p style="margin: 0 0 10px 0; color: #1f2937;"><strong>Service:</strong> ${booking?.service_type}</p>
                   <p style="margin: 0 0 10px 0; color: #1f2937;"><strong>Event Date:</strong> ${new Date(booking?.event_date)?.toLocaleDateString()}</p>
-                  <p style="margin: 0 0 10px 0; color: #1f2937;"><strong>Location:</strong> ${booking?.event_location}</p>
+                  <p style="margin: 0 0 10px 0; color: #1f2937;"><strong>Time:</strong> ${booking?.event_location}</p>
                   ${booking?.message ? `<p style="margin: 0; color: #1f2937;"><strong>Message:</strong> ${booking?.message}</p>` : ''}
                 </div>
                 <div style="text-align: center; margin: 30px 0;">
@@ -142,7 +142,7 @@ serve(async (req) => {
                 <div style="background-color: #f9fafb; border-left: 4px solid #10b981; padding: 20px; margin: 0 0 30px 0;">
                   <p style="margin: 0 0 10px 0; color: #1f2937;"><strong>Service:</strong> ${booking?.service_type}</p>
                   <p style="margin: 0 0 10px 0; color: #1f2937;"><strong>Date:</strong> ${new Date(booking?.event_date)?.toLocaleDateString()}</p>
-                  <p style="margin: 0 0 10px 0; color: #1f2937;"><strong>Location:</strong> ${booking?.event_location}</p>
+                  <p style="margin: 0 0 10px 0; color: #1f2937;"><strong>Time:</strong> ${booking?.event_location}</p>
                   <p style="margin: 0; color: #1f2937;"><strong>Status:</strong> <span style="color: #10b981;">Confirmed</span></p>
                 </div>
                 <p style="color: #4b5563; line-height: 1.6;">I'm looking forward to working with you! If you have any questions, feel free to reach out.</p>
@@ -227,7 +227,7 @@ serve(async (req) => {
                 <div style="background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 20px; margin: 0 0 30px 0;">
                   <p style="margin: 0 0 10px 0; color: #1f2937;"><strong>Service:</strong> ${booking?.service_type}</p>
                   <p style="margin: 0 0 10px 0; color: #1f2937;"><strong>Date:</strong> ${new Date(booking?.event_date)?.toLocaleDateString()}</p>
-                  <p style="margin: 0; color: #1f2937;"><strong>Location:</strong> ${booking?.event_location}</p>
+                  <p style="margin: 0; color: #1f2937;"><strong>Time:</strong> ${booking?.event_location}</p>
                 </div>
                 <p style="color: #4b5563; line-height: 1.6;">I'm excited to work with you! Please let me know if you need any last-minute adjustments.</p>
                 <div style="text-align: center; margin: 30px 0;">

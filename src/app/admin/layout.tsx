@@ -120,9 +120,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const navItems = [
     { href: '/admin', label: 'Dashboard', icon: 'HomeIcon' },
     { href: '/admin/bookings', label: 'Bookings', icon: 'CalendarIcon' },
-    { href: '/admin/contacts', label: 'Contact Messages', icon: 'EnvelopeIcon' },
+    { href: '/admin/contacts', label: 'Messages', icon: 'EnvelopeIcon' },
     { href: '/admin/testimonials', label: 'Testimonials', icon: 'StarIcon' },
-    { href: '/admin/media', label: 'Media Gallery', icon: 'PhotoIcon' },
+    { href: '/admin/media', label: 'Media', icon: 'PhotoIcon' },
     { href: '/admin/projects', label: 'Projects', icon: 'FolderIcon' },
     { href: '/admin/services', label: 'Services', icon: 'BriefcaseIcon' },
     { href: '/admin/users', label: 'Users', icon: 'UsersIcon' },
